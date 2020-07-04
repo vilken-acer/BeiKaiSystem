@@ -695,3 +695,457 @@ create table gen_table_column (
   update_time       datetime                                   comment '更新时间',
   primary key (column_id)
 ) engine=innodb auto_increment=1 comment = '代码生成业务表字段';
+
+drop table if exists ITEM_INFO;
+
+/*==============================================================*/
+/* Table: ITEM_INFO                                             */
+/*==============================================================*/
+create table ITEM_INFO
+(
+   ITEM_NUM             char(8) not null comment '资源池事项编号',
+   ITEM_NAME            varchar(90) not null comment '资源池事项名称',
+   CONTRACT_NUM         varchar(90) not null comment '人员使用部门',
+   BEGIN_DATE           date not null comment '服务起始日期',
+   END_DATE             date not null comment '服务结束日期',
+   WORK_SYSTEM          varchar(120) not null comment '工作系统',
+   APTITUDES_AREA       varchar(30) not null comment '资质领域',
+   CREATE_TIME          datetime comment '创建时间',
+   CREATE_BY            varchar(30) comment '创建人',
+   UPDATE_TIME          datetime comment '修改时间',
+   UPDATE_BY            varchar(30) comment '修改人',
+   primary key (ITEM_NUM)
+);
+
+alter table ITEM_INFO comment '订单资源池信息表';
+
+drop table if exists ITEM_QUALIFICATION_INFO;
+
+/*==============================================================*/
+/* Table: ITEM_QUALIFICATION_INFO                               */
+/*==============================================================*/
+create table ITEM_QUALIFICATION_INFO
+(
+   ITEM_NUM             char(8) not null comment '资源池事项编号',
+   STAFF_LEVEL          char(2) comment '资质级别',
+   WORKLOAD             decimal(10,2) comment '工作量',
+   STAFF_COUNT          int comment '高级_人数',
+   CREATE_TIME          datetime comment '创建时间',
+   CREATE_BY            varchar(30) comment '创建人',
+   UPDATE_TIME          datetime comment '修改时间',
+   UPDATE_BY            varchar(30) comment '修改人'
+);
+
+alter table ITEM_QUALIFICATION_INFO comment '资源池事项资质信息表';
+
+/*==============================================================*/
+/* Index: ITEM_NUM                                              */
+/*==============================================================*/
+create index ITEM_QUALIFICATION_INFO_N1 on ITEM_QUALIFICATION_INFO
+(
+   ITEM_NUM
+);
+
+drop table if exists ITEM_STAFF_INFO;
+
+/*==============================================================*/
+/* Table: ITEM_STAFF_INFO                                       */
+/*==============================================================*/
+create table ITEM_STAFF_INFO
+(
+   ITEM_NUM             char(8) not null comment '资源池事项编号',
+   STAFF_ID             varchar(18) not null comment '资源池人员ID',
+   STAFF_LEVEL          char(2) comment '投入人员级别',
+   STAFF_TYPE           char(2) comment '人员类型（专职/兼职/备用）',
+   CHANGE_VALID_DATE    date comment '变更开始有效日期',
+   CHANGE_COUNT         int comment '可变更人数',
+   VALID_CHANGE_COUNT   int comment '有效变更人数',
+   CHANGE_STATUS        char(2) comment '可否被变更',
+   CREATE_TIME          datetime comment '创建时间',
+   CREATE_BY            varchar(30) comment '创建人',
+   UPDATE_TIME          datetime comment '修改时间',
+   UPDATE_BY            varchar(30) comment '修改人'
+);
+
+alter table ITEM_STAFF_INFO comment '资源池事项投入人员名单';
+
+/*==============================================================*/
+/* Index: ITEM_STAFF_INFO_N1                                    */
+/*==============================================================*/
+create index ITEM_STAFF_INFO_N1 on ITEM_STAFF_INFO
+(
+   ITEM_NUM
+);
+create index ITEM_STAFF_INFO_N2 on ITEM_STAFF_INFO
+(
+   STAFF_ID
+);
+
+drop table if exists ITEM_FILE_INFO;
+
+/*==============================================================*/
+/* Table: ITEM_FILE_INFO                                        */
+/*==============================================================*/
+create table ITEM_FILE_INFO
+(
+   ITEM_NUM             char(8) not null comment '资源池事项编号',
+   DEMAND_LETTER        varchar(3000) comment '需求函',
+   DEMAND_DATE          date comment '需求函下发时间',
+   DEMAND_PERSON        varchar(21) comment '需求函工作联系人',
+   DEMAND_TELL          varchar(11) comment '需求函联系人方式',
+   CONFIDENTIAL_LETTER  varchar(3000) comment '保密函',
+   STAFF_LIST           varchar(3000) comment '投入人员名单',
+   NOTIFICATION_LETTER  varchar(3000) comment '入选通知书',
+   NOTIFICATION_DATE    date comment '通知书下发时间',
+   NOTIFICATION_PERSON  varchar(21) comment '通知书工作联系人',
+   NOTIFICATION_TELL    varchar(11) comment '通知书联系人方式',
+   ORG_NAME             varchar(36) comment '下发单位',
+   CREATE_TIME          datetime comment '创建时间',
+   CREATE_BY            varchar(30) comment '创建人',
+   UPDATE_TIME          datetime comment '修改时间',
+   UPDATE_BY            varchar(30) comment '修改人',
+   primary key (ITEM_NUM)
+);
+
+alter table ITEM_FILE_INFO comment '资源池文件信息表';
+
+drop table if exists ITEM_STAFF_INPUT_INFO;
+
+/*==============================================================*/
+/* Table: ITEM_STAFF_INPUT_INFO                                 */
+/*==============================================================*/
+create table ITEM_STAFF_INPUT_INFO
+(
+   ITEM_NUM             char(8) not null comment '项目事项编号',
+   PROJECT_NAME         varchar(120) comment '项目名称',
+   STAFF_LEVEL          char(2) comment '人员级别',
+   MON_MONTH            decimal(10,2) default 0.00 comment '人月',
+   INPUT_AMOUNT         int default 0 comment '订单人数',
+   REAL_AMOUNT          int default 0 comment '实际人数',
+   FINISH_MAN_MONTH     decimal(10,2) default 0.00 comment '已完成人月',
+   KERMI_RECORD         decimal(10,2) default 0.00 comment '科密记录',
+   PV_VALID_RESOURCES   decimal(10,2) default 0.00 comment 'PV可使用资源',
+   REALITY_STATISTICS_DATE date comment '实际统计日期',
+   EXEC_FINISH_DATE     date comment '执行完成日期计划',
+   SURPLUS_CYCLE_MAN_MONTH decimal(10,2) default 0.00 comment '剩余周期人月',
+   EV_SURPLUS_EXEC_MAN_MONTH decimal(10,2) default 0.00 comment 'EV剩余执行人月',
+   SV_PROGRESS_DEVIATION decimal(10,2) default 0.00 comment 'SV进度偏差',
+   EXEC_FINISH_DATE_REFERENCE date comment '执行完成日期参考',
+   ADD_AMOUNT           int default 0 comment '增加人数',
+   EXECUTED_FINISH_DATE date comment '执行完成日期',
+   HOLIDAY              decimal(10,2) default 0.00 comment '节假日',
+   REPAIR_MAN_MONTH     decimal(10,2) default 0.00 comment '可补人月',
+   SV_REPAIRED_PROGRESS_DEVIATION decimal(10,2) default 0.00 comment 'SV补后进度偏差',
+   REFERENCE_ONLY       date comment '仅供参考',
+   PLAN_COMPLETE_DAY    int default 0 comment '计划所需天数',
+   ADD_AMOUNT_VIRTUAL   int default 0 comment '增加人数(虚拟)',
+   REAL_STAFF_LIST      varchar(3000) comment '实际人员名单',
+   ITEM_STAFF_LIST      varchar(3000) comment '订单人员名单',
+   CREATE_TIME          datetime comment '创建时间',
+   CREATE_BY            varchar(30) comment '创建人',
+   UPDATE_TIME          datetime comment '修改时间',
+   UPDATE_BY            varchar(30) comment '修改人'
+);
+
+alter table ITEM_STAFF_INPUT_INFO comment '订单人员投入表';
+
+/*==============================================================*/
+/* Index: ITEM_NUM                                              */
+/*==============================================================*/
+create index ITEM_STAFF_INPUT_INFO_N1 on ITEM_STAFF_INPUT_INFO
+(
+   ITEM_NUM
+);
+drop table if exists STAFF_ITEM_RECODE_INFO;
+
+/*==============================================================*/
+/* Table: STAFF_ITEM_RECODE_INFO                                */
+/*==============================================================*/
+create table STAFF_ITEM_RECODE_INFO
+(
+   SERIAL_NUM           varchar(32)  not null comment '操作流水编号',
+   ITEM_NUM_OLD         char(8) not null comment '原事项编号',
+   ITEM_NUM_NEW         char(8) not null comment '新事项编号',
+   STAFF_ID             varchar(18) not null comment '变更人员ID',
+   STAFF_LEVEL          char(2) not null comment '人员级别',
+   EXEC_DATE            date comment '执行日期',
+   OPTION_TYPE          char(2) comment '流转类型',
+   TO_STAFF_ID          varchar(18) comment '操作对象ID',
+   PROGRESS_BEGIN_DATE  date comment '流程开始时间',
+   EXEC_PROGRESS        char(2) comment '执行进度',
+   MARKER_NOTE          varchar(3000) comment '注意事项',
+   REMARK               varchar(3000) comment '备注',
+   CREATE_TIME          datetime comment '创建时间',
+   CREATE_BY            varchar(30) comment '创建人',
+   UPDATE_TIME          datetime comment '修改时间',
+   UPDATE_BY            varchar(30) comment '修改人',
+   primary key (SERIAL_NUM)
+);
+
+alter table STAFF_ITEM_RECODE_INFO comment '人员订单流转记录信息表';
+
+drop table if exists ITEM_REAL_INPUT_INFO;
+
+/*==============================================================*/
+/* Table: ITEM_REAL_INPUT_INFO                                  */
+/*==============================================================*/
+create table ITEM_REAL_INPUT_INFO
+(
+   ITEM_NUM             char(8) not null comment '资源池事项编号',
+   STAFF_ID             varchar(18) not null comment '资源池人员ID',
+   STAFF_LEVEL          char(2) comment '投入人员级别',
+   INPUT_TYPE           char(2) comment '入场类型（入场/转场/替换）',
+   TO_STAFF_ID          varchar(18) comment '对应人员ID',
+   INPUT_STATUS         char(2) comment '入场状态',
+   BEGIN_TIME           date comment '开始时间',
+   END_TIME             date comment '结束时间',
+   CREATE_TIME          datetime comment '创建时间',
+   CREATE_BY            varchar(30) comment '创建人',
+   UPDATE_TIME          datetime comment '修改时间',
+   UPDATE_BY            varchar(30) comment '修改人'
+);
+
+alter table ITEM_REAL_INPUT_INFO comment '订单实际投入人员名单记录表';
+/*==============================================================*/
+/* Index: ITEM_REAL_INPUT_INFO_N1                               */
+/*==============================================================*/
+create index ITEM_REAL_INPUT_INFO_N1 on ITEM_REAL_INPUT_INFO
+(
+   ITEM_NUM
+);
+
+drop table if exists STAFF_MAINTIAN_INFO;
+
+/*==============================================================*/
+/* Table: STAFF_MAINTIAN_INFO                                   */
+/*==============================================================*/
+create table STAFF_MAINTIAN_INFO
+(
+   STAFF_ID             varchar(18) not null,
+   CREDENTIALS_TYPE     char(2),
+   STAFF_NAME           varchar(30),
+   SEX_TYPE             char(2),
+   BELONG_SYSTEM        varchar(300),
+   CROSS_GUARD          varchar(30),
+   CROSS_GUARD_NUM      varchar(10),
+   EDUCATIONAL          char(2),
+   DEGREE               char(2),
+   GRADUATION_SCHOOL    varchar(300),
+   PROFESSIONAL_CATEGORIES char(2),
+   GRADUATION_DATE      char(8),
+   ADMISSION            char(8),
+   DIPLOMA_NUMBER       varchar(60),
+   DEGREE_CARD_NUMBER   varchar(60),
+   QUALIFICATION_CERTIFICATE varchar(300),
+   HORIZONTAL_CERTIFICATE varchar(300),
+   "E-MAIL"             varchar(60),
+   PHONE                varchar(11),
+   EMPLOYMENT_CONTRACT_NUM char(6),
+   WORK_YEARS           int,
+   BANK_WORK_YEARS      int,
+   BANK_ITEM_NUM        int,
+   CCB_WORK_YEARS       int,
+   CCB_ITEM_NUM         int,
+   CCB_ITEM_LIST        varchar(3000),
+   ITEM_TYPE            char(2),
+   ITEM_NUM             char(8),
+   CONTRACT_NUM         varchar(15),
+   SUPPLIERS            varchar(60),
+   ITEM_ROLES           char(2),
+   SERVICE_TYPE         char(2),
+   QUALIFICATION_AREA   char(2),
+   QUALIFICATION_LEVEL  char(2),
+   CORE_MEMBER          char(2),
+   JOIN_STATUS          char(2),
+   primary key (STAFF_ID)
+);
+
+alter table STAFF_MAINTIAN_INFO comment '人员维护信息表';
+
+drop table if exists UASS_STAFF_INFO;
+
+/*==============================================================*/
+/* Table: UASS_STAFF_INFO                                       */
+/*==============================================================*/
+create table UASS_STAFF_INFO
+(
+   STAFF_ID             char(18) not null,
+   STAFF_NAME           varchar(60),
+   CREDENTIALS_TYPE     varchar(60),
+   SEX_TYPE             varchar(6),
+   BORN_DATE            char(8),
+   OFFICE_TELL          varchar(12),
+   MOBILE_PHONE         char(11),
+   "E-MAIL"             varchar(60),
+   FAX                  varchar(12),
+   SERVICE_ORG_NAME     varchar(60),
+   EDUCATIONAL          varchar(30),
+   GRADUATION_SCHOOL    varchar(60),
+   SCHOOL_NATURE        varchar(60),
+   PROFESSIONAL_CATEGORIES varchar(60),
+   PROFESSIONAL_NAME    varchar(60),
+   LEARN_FORM           char(2),
+   GRADUATION_DATE      char(8),
+   ORG_NUM              varchar(12),
+   ORG_NAME             varchar(60),
+   primary key (STAFF_ID)
+);
+
+alter table UASS_STAFF_INFO comment 'UASS申请资料信息表';
+
+drop table if exists STAFF_BASIC_INFO;
+
+/*==============================================================*/
+/* Table: STAFF_BASIC_INFO                                      */
+/*==============================================================*/
+create table STAFF_BASIC_INFO
+(
+   STAFF_NAME           varchar(30) not null comment '姓名',
+   SEX_TYPE             char(1) not null comment '性别',
+   CREDENTIALS_TYPE     char(2) not null comment '证件类型',
+   STAFF_ID             varchar(18) not null comment '证件号码',
+   TELL                 varchar(12) not null default '1' comment '电话  数字，如无则填写为“1”',
+   ADDRESS              varchar(99) not null comment '现住址',
+   EMAIL                varchar(48) not null comment '邮箱 必须是邮箱格式，如无则统一填写公司邮箱',
+   COMPANY_NAME         varchar(48) not null default '北京宇信科技集团股份有限公司' comment '公司名称',
+   LOCATION_NAME        varchar(60) not null comment '人员所在地名称',
+   TECHNOLOGY_DESCRIPTION varchar(120) not null comment '专业技能描述',
+   CONTRACT_BEGIN_DATE  date not null comment '劳动合同开始日期yyyy/MM/dd',
+   CONTRACT_END_DATE    date not null comment '劳动合同结束日期yyyy/MM/dd',
+   STAFF_STATUS         char(2) default '00' comment '人员状态',
+   ON_SITE_DATE         datetime comment '驻场起始时间',
+   OFF_SITE_DATE        datetime comment '驻场结束时间',
+   CREATE_TIME          datetime comment '创建时间',
+   CREATE_BY            varchar(30) comment '创建人',
+   UPDATE_TIME          datetime comment '修改时间',
+   UPDATE_BY            varchar(30) comment '修改人',
+   primary key (STAFF_ID)
+);
+
+alter table STAFF_BASIC_INFO comment '人员基本信息表';
+
+drop table if exists STAFF_EDUCATION_INFO;
+
+/*==============================================================*/
+/* Table: STAFF_EDUCATION_INFO                                  */
+/*==============================================================*/
+create table STAFF_EDUCATION_INFO
+(
+   STAFF_ID             varchar(18) not null comment '证件号码',
+   EDUCATION            char(2) not null comment '学历',
+   ACADEMIC_DEGREE      char(2) not null comment '学位',
+   SCHOOL               varchar(45) not null comment '毕业学校名称',
+   SCHOOL_CATEGORY      char(2) not null comment '毕业学校类别',
+   MAJOR                varchar(45) not null comment '专业名称',
+   MAJOR_CATEGORY       char(2) not null comment '专业类别',
+   GRADUATION_NUM       varchar(20) default '无' comment '毕业证号',
+   DEGREE_NUM           varchar(20) default '无' comment '学位证号',
+   ENROLLMENT_TIME      date comment '入学时间',
+   GRADUATION_TIME      date comment '毕业时间',
+   CREATE_TIME          datetime comment '创建时间',
+   CREATE_BY            varchar(30) comment '创建人',
+   UPDATE_TIME          datetime comment '修改时间',
+   UPDATE_BY            varchar(30) comment '修改人'
+);
+
+alter table STAFF_EDUCATION_INFO comment '教育经历信息表';
+
+/*==============================================================*/
+/* Index: STAFF_EDUCATION_INFO_N1                               */
+/*==============================================================*/
+create index STAFF_EDUCATION_INFO_N1 on STAFF_EDUCATION_INFO
+(
+   STAFF_ID
+);
+
+drop table if exists STAFF_PROJECT_EXPERIENCE;
+
+/*==============================================================*/
+/* Table: STAFF_PROJECT_EXPERIENCE                              */
+/*==============================================================*/
+create table STAFF_PROJECT_EXPERIENCE
+(
+   STAFF_ID             varchar(18) not null comment '证件号码',
+   PROJECT_ORDER        int(3) not null comment '项目序号',
+   PROJECT_NAME         varchar(150) not null comment '项目名称',
+   PROJECT_CCB          char(1) not null comment '是否建行项目',
+   CCB_FRAMEWORK        varchar(150) comment '使用建行新一代框架',
+   PROJECT_ZNGJ         char(1) not null comment '是否中农工交银行项目',
+   PROJECT_OTHER        char(1) not null comment '是否中农工交以外其他银行',
+   PROJECT_CATEGORY     varchar(150) not null comment '项目业务类别',
+   BEGIN_TIME           date not null comment '开始时间',
+   END_TIME             date not null comment '结束时间',
+   JOB_ROLE             varchar(90) not null comment '项目角色',
+   WITNESS              varchar(30) not null comment '证明人',
+   WITNESS_TELL         varchar(15) not null default '1' comment '证明人电话',
+   PROJECT_DESC         varchar(900) not null comment '项目简述',
+   JOB_DUTY             varchar(900) not null comment '项目职责',
+   TOOL_SKILL           varchar(300) not null comment '使用工具/技能',
+   CREATE_TIME          datetime comment '创建时间',
+   CREATE_BY            varchar(30) comment '创建人',
+   UPDATE_TIME          datetime comment '修改时间',
+   UPDATE_BY            varchar(30) comment '修改人'
+);
+
+alter table STAFF_PROJECT_EXPERIENCE comment '项目经历信息表';
+
+/*==============================================================*/
+/* Index: STAFF_PROJECT_EXPERIENCE_N1                           */
+/*==============================================================*/
+create index STAFF_PROJECT_EXPERIENCE_N1 on STAFF_PROJECT_EXPERIENCE
+(
+   STAFF_ID
+);
+
+drop table if exists STAFF_WORK_EXPERIENCE_INFO;
+
+/*==============================================================*/
+/* Table: STAFF_WORK_EXPERIENCE_INFO                            */
+/*==============================================================*/
+create table STAFF_WORK_EXPERIENCE_INFO
+(
+   STAFF_ID             varchar(18) not null comment '证件号码',
+   COMPANY_NAME         varchar(48) not null comment '公司名称',
+   BEGIN_TIME           date not null comment '开始时间',
+   END_TIME             date not null comment '结束时间',
+   JOB_DESC             varchar(90) not null comment '职务描述',
+   JOB_DUTY             varchar(900) not null comment '工作职责',
+   CREATE_TIME          datetime comment '创建时间',
+   CREATE_BY            varchar(30) comment '创建人',
+   UPDATE_TIME          datetime comment '修改时间',
+   UPDATE_BY            varchar(30) comment '修改人'
+);
+
+alter table STAFF_WORK_EXPERIENCE_INFO comment '工作经历信息表';
+
+/*==============================================================*/
+/* Index: STAFF_WORK_EXPERIENCE_INFO_N1                         */
+/*==============================================================*/
+create index STAFF_WORK_EXPERIENCE_INFO_N1 on STAFF_WORK_EXPERIENCE_INFO
+(
+   STAFF_ID
+);
+drop table if exists STAFF_FILE_INFO;
+
+/*==============================================================*/
+/* Table: STAFF_FILE_INFO                                       */
+/*==============================================================*/
+create table STAFF_FILE_INFO
+(
+   STAFF_ID             varchar(18) not null comment '证件号码',
+   ID_CARD_FRONT        varchar(300) comment '身份证正面',
+   ID_CARD_REVERSE      varchar(300) comment '身份证反面',
+   RESUME               varchar(300) comment '简历',
+   EDUCATION            varchar(300) comment '学历',
+   ACADEMIC_DEGREE      varchar(300) comment '学位',
+   RESUME_PROVE         varchar(300) comment '学历截图证明',
+   CONTRACT             varchar(300) comment '合同',
+   ATTACHMENT           varchar(300) comment '附件备份',
+   CREATE_TIME          datetime comment '创建时间',
+   CREATE_BY            varchar(30) comment '创建人',
+   UPDATE_TIME          datetime comment '修改时间',
+   UPDATE_BY            varchar(30) comment '修改人',
+   primary key (STAFF_ID)
+);
+
+alter table STAFF_FILE_INFO comment '人员附件信息表';
